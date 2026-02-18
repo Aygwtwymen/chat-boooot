@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق الدردشة - تسجيل الدخول</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo">💬</div>
+            <h1>مرحباً بك</h1>
+            <p>أدخل اسمك للانضمام للدردشة</p>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="اسم المستخدم" 
+                        required
+                        maxlength="20"
+                    >
+                </div>
+                
+                <div class="input-group">
+                    <select id="roomSelect">
+                        <option value="general">💬 الغرفة العامة</option>
+                        <option value="gaming">🎮 غرفة الألعاب</option>
+                        <option value="tech">💻 غرفة التقنية</option>
+                        <option value="sports">⚽ غرفة الرياضة</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-primary">
+                    دخول للدردشة
+                </button>
+            </form>
+            
+            <div class="info">
+                <p>👥 المستخدمين النشطين: <span id="activeUsers">0</span></p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // حفظ اسم المستخدم والانتقال لصفحة الدردشة
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const room = document.getElementById('roomSelect').value;
+            
+            if (username) {
+                // حفظ البيانات
+                localStorage.setItem('chatUsername', username);
+                localStorage.setItem('chatRoom', room);
+                localStorage.setItem('loginTime', new Date().toISOString());
+                
+                // الانتقال لصفحة الدردشة
+                window.location.href = 'chat.html';
+            }
+        });
+        
+        // عرض عدد المستخدمين (وهمي للتجربة)
+        document.getElementById('activeUsers').textContent = Math.floor(Math.random() * 50) + 10;
+    </script>
+    
+</body>
+</html>
