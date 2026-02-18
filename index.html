@@ -3,69 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الدردشة - تسجيل الدخول</title>
+    <title>💬 دردشة مباشرة</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="login-page">
+    
+    <!-- خلفية متحركة -->
+    <div class="animated-bg">
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+        <div class="bubble"></div>
+    </div>
     
     <div class="login-container">
-        <div class="login-box">
-            <div class="logo">💬</div>
-            <h1>مرحباً بك</h1>
-            <p>أدخل اسمك للانضمام للدردشة</p>
+        <div class="login-card">
             
-            <form id="loginForm">
-                <div class="input-group">
+            <!-- الشعار -->
+            <div class="logo-container">
+                <div class="logo-icon">💬</div>
+                <h1 class="app-title">دردشة مباشرة</h1>
+                <p class="app-subtitle">تواصل مع الجميع في الوقت الفعلي</p>
+            </div>
+            
+            <!-- النموذج -->
+            <form id="loginForm" class="login-form">
+                
+                <div class="form-group">
+                    <label for="username">
+                        <span class="icon">👤</span>
+                        اسم المستخدم
+                    </label>
                     <input 
                         type="text" 
                         id="username" 
-                        placeholder="اسم المستخدم" 
+                        placeholder="أدخل اسمك (2-20 حرف)" 
                         required
+                        minlength="2"
                         maxlength="20"
+                        autocomplete="off"
                     >
+                    <small class="hint">اختر اسماً مميزاً يعرفك به الجميع</small>
                 </div>
                 
-                <div class="input-group">
-                    <select id="roomSelect">
+                <div class="form-group">
+                    <label for="roomSelect">
+                        <span class="icon">🚪</span>
+                        اختر الغرفة
+                    </label>
+                    <select id="roomSelect" class="room-select">
                         <option value="general">💬 الغرفة العامة</option>
-                        <option value="gaming">🎮 غرفة الألعاب</option>
-                        <option value="tech">💻 غرفة التقنية</option>
-                        <option value="sports">⚽ غرفة الرياضة</option>
+                        <option value="gaming">🎮 عشاق الألعاب</option>
+                        <option value="tech">💻 التقنية والبرمجة</option>
+                        <option value="sports">⚽ الرياضة</option>
+                        <option value="movies">🎬 الأفلام والمسلسلات</option>
+                        <option value="music">🎵 الموسيقى</option>
                     </select>
                 </div>
                 
-                <button type="submit" class="btn-primary">
-                    دخول للدردشة
+                <button type="submit" class="btn-enter">
+                    <span>دخول للدردشة</span>
+                    <span class="arrow">→</span>
                 </button>
+                
             </form>
             
-            <div class="info">
-                <p>👥 المستخدمين النشطين: <span id="activeUsers">0</span></p>
+            <!-- معلومات إضافية -->
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-icon">🌍</div>
+                    <div class="info-text">
+                        <strong>عالمي</strong>
+                        <span>تواصل مع الجميع</span>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">⚡</div>
+                    <div class="info-text">
+                        <strong>فوري</strong>
+                        <span>رسائل لحظية</span>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🔒</div>
+                    <div class="info-text">
+                        <strong>آمن</strong>
+                        <span>خصوصية محمية</span>
+                    </div>
+                </div>
             </div>
+            
         </div>
     </div>
     
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
     <script>
-        // حفظ اسم المستخدم والانتقال لصفحة الدردشة
+        // إعداد Firebase (استخدم مشروعك الخاص - شرح تحت)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDemoKeyForTestingPurposes123456789",
+            authDomain: "chat-demo.firebaseapp.com",
+            databaseURL: "https://chat-demo-default-rtdb.firebaseio.com",
+            projectId: "chat-demo",
+            storageBucket: "chat-demo.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        
+        // معالجة النموذج
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const username = document.getElementById('username').value.trim();
             const room = document.getElementById('roomSelect').value;
             
-            if (username) {
-                // حفظ البيانات
-                localStorage.setItem('chatUsername', username);
-                localStorage.setItem('chatRoom', room);
-                localStorage.setItem('loginTime', new Date().toISOString());
-                
-                // الانتقال لصفحة الدردشة
-                window.location.href = 'chat.html';
+            if (username.length < 2) {
+                alert('الاسم قصير جداً! أدخل على الأقل حرفين.');
+                return;
             }
+            
+            // حفظ البيانات
+            localStorage.setItem('chatUsername', username);
+            localStorage.setItem('chatRoom', room);
+            localStorage.setItem('userId', 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9));
+            
+            // انتقال مع تأثير
+            document.querySelector('.login-card').style.animation = 'slideOut 0.5s ease forwards';
+            
+            setTimeout(() => {
+                window.location.href = 'chat.html';
+            }, 500);
         });
-        
-        // عرض عدد المستخدمين (وهمي للتجربة)
-        document.getElementById('activeUsers').textContent = Math.floor(Math.random() * 50) + 10;
     </script>
     
 </body>
